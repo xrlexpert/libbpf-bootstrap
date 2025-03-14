@@ -27,6 +27,9 @@ int main(int argc, char **argv)
 	}
 
 	/* ensure BPF program only handles write() syscalls from our process */
+	/* bss is a section in the ELF file, it is used to store global variables, mypid is a global variable in the minimal.bpf.c 
+	 * bss is designed to share memory with the BPF program, so we can assign the current process id to mypid
+	 */
 	skel->bss->my_pid = getpid();
 
 	/* Load & verify BPF programs */
