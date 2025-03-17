@@ -10,13 +10,18 @@
 #include <arpa/inet.h>
 #include "nfs.skel.h"
 
+static int libbpf_print_fn(enum libbpf_print_level level, const char *format, va_list args)
+{
+	return vfprintf(stderr, format, args);
+}
+
 int main(int argc, char **argv)
 {
     struct nfs_bpf *skel;
     int err;
     
     // 设置 libbpf 调试信息
-    libbpf_set_print(NULL);
+    libbpf_set_print(libbpf_print_fn);
 
     // 打开并加载 BPF 程序
     skel = nfs_bpf__open_and_load();
@@ -50,10 +55,6 @@ int main(int argc, char **argv)
             // 移动到下一个键
             key = next_key;
         }
-
-        sleep(1);
-        printf("\033[2J");  // 清屏
-        printf("\033[H");   // 光标移到开头
     }
 
 cleanup:
